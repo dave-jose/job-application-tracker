@@ -3,10 +3,15 @@ package com.dave.jobtracker.job_application_tracker.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.dave.jobtracker.job_application_tracker.enums.ApplicationStatus;
+import com.dave.jobtracker.job_application_tracker.enums.InterviewStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 public class JobApplication { 
@@ -15,30 +20,17 @@ public class JobApplication {
     
     private String jobTitle;
     private String companyName;
-    
+
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long applicationId;
     private LocalDate dateApplied;
-    
-    enum applicationStatus {
-        Applied, 
-        Interview, 
-        Rejected, 
-        Offer, 
-        Withdrawn
-    }
 
-    private applicationStatus appStatus;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus appStatus;
 
-    enum interviewStatus {
-        NA, 
-        Early, 
-        Mid, 
-        Final
-    }
-
-    private interviewStatus intStatus;
+    @Enumerated(EnumType.STRING)
+    private InterviewStatus intStatus;
 
     private String userEmail;
     private LocalDateTime dateCreated;
@@ -46,7 +38,7 @@ public class JobApplication {
 
     // CONSTRUCTOR JOB APPLICATION:
 
-    public JobApplication(String jobTitle, String companyName, LocalDate dateApplied, applicationStatus appStatus, interviewStatus intStatus,
+    public JobApplication(String jobTitle, String companyName, LocalDate dateApplied, ApplicationStatus appStatus, InterviewStatus intStatus,
         String userEmail
     ) {
 
@@ -91,29 +83,24 @@ public class JobApplication {
     }
 
     // APP STATUS: GETTER + SETTER
-    public applicationStatus getAppStatus() {
+    public ApplicationStatus getAppStatus() {
         return this.appStatus;
     }
 
-    public void setAppStatus(applicationStatus appStatus) {
+    public void setAppStatus(ApplicationStatus appStatus) {
         this.appStatus = appStatus;
         this.dateUpdated = LocalDateTime.now();
     }
 
     // INTERVIEW STATUS: GETTER + SETTER
-    public interviewStatus getInterviewStatus() {
+    public InterviewStatus getInterviewStatus() {
         return this.intStatus;
     }
 
-    public void setInterviewStatus(interviewStatus intStatus) {
+    public void setInterviewStatus(InterviewStatus intStatus) {
         this.intStatus = intStatus;
         this.dateUpdated = LocalDateTime.now();
     }
-
-
-
-
-
 
 
 
