@@ -35,6 +35,8 @@ public class JATService {
         }
     }
 
+
+    // UPDATE STATUSES 
     public JobApplication updateStatus(Long id, ApplicationStatus applicationStatus, InterviewStatus interviewStatus) { 
         JobApplication application = repository.findById(id) .orElseThrow(() -> new RuntimeException("JobApplication not found"));;
 

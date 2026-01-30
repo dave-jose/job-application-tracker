@@ -38,6 +38,10 @@ public class JobApplication {
 
     // CONSTRUCTOR JOB APPLICATION:
 
+    public JobApplication() {
+        
+    }
+
     public JobApplication(String jobTitle, String companyName, LocalDate dateApplied, ApplicationStatus appStatus, InterviewStatus intStatus,
         String userEmail
     ) {
@@ -50,6 +54,10 @@ public class JobApplication {
         this.userEmail = userEmail;
         this.dateCreated = LocalDateTime.now();
         this.dateUpdated = LocalDateTime.now();
+    }
+
+    public Long getAppId() {
+        return this.applicationId;
     }
     
     // JOB TITLE: GETTER + SETTER
