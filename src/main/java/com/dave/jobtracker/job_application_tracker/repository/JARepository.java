@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface JARepository extends JpaRepository<JobApplication, Long>{
+public interface JARepository extends JpaRepository<JobApplication, Integer>{
 
     List<JobApplication> findByDateApplied(LocalDate dateApplied);
     

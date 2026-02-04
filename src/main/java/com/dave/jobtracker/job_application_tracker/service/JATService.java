@@ -11,10 +11,9 @@ import com.dave.jobtracker.job_application_tracker.enums.ApplicationStatus;
 import com.dave.jobtracker.job_application_tracker.enums.InterviewStatus;
 import com.dave.jobtracker.job_application_tracker.models.JobApplication;
 import com.dave.jobtracker.job_application_tracker.repository.JARepository;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.None;
 
 /*Job_ApplicationService
-functions: Add application, delete application, view_application_list, sort/filter by date_applied, filter by date range, sort/filter by application status + optionally interview stage
+functions: Add application, delete application, view_application_list, sort/filter by date_applied, filter by date range, sort/filter by application status + interview stage
  */
 
 @Service
@@ -24,6 +23,11 @@ public class JATService {
 
     public JATService(JARepository repository) {
         this.repository = repository;
+    }
+
+    public JobApplication findApplication(Integer id) {
+        return repository.findById(id) .orElseThrow(() -> new RuntimeException("JobApplication not found"));
+
     }
 
     // ADD APPLICATION - must check if status valid etc
@@ -37,18 +41,31 @@ public class JATService {
 
 
     // UPDATE STATUSES 
-    public JobApplication updateStatus(Long id, ApplicationStatus applicationStatus, InterviewStatus interviewStatus) { 
-        JobApplication application = repository.findById(id) .orElseThrow(() -> new RuntimeException("JobApplication not found"));;
+    public JobApplication updateStatus(Integer id, ApplicationStatus applicationStatus) { 
+        JobApplication application = repository.findById(id) .orElseThrow(() -> new RuntimeException("JobApplication not found"));
 
         application.setAppStatus(applicationStatus);
+        return repository.save(application);
+
+    }
+
+    public JobApplication updateInterview(Integer id, InterviewStatus interviewStatus) throws Exception { 
+        JobApplication application = repository.findById(id) .orElseThrow(() -> new RuntimeException("JobApplication not found"));
+
         application.setInterviewStatus(interviewStatus);
         return repository.save(application);
 
     }
 
+
+
     // DELETE APPLICATION 
-    public void deleteApplication(Long id) {
+    public void deleteApplication(Integer id) {
         repository.deleteById(id);
+    }
+
+    public void deleteAllApplications() {
+        repository.deleteAll();
     }
 
     // VIEW APPLICATION LIST
@@ -80,12 +97,8 @@ public class JATService {
         return repository.findByAppStatus(status);
     }
 
-    public List<JobApplication> filterbyApplicationStatusInterview(InterviewStatus status) {
+    public List<JobApplication> filterbyInterviewStatus(InterviewStatus status) {
         return repository.findByIntStatus(status);
-    }
-
-    public List<JobApplication> filterByStatuses(ApplicationStatus status1, InterviewStatus status2) {
-        return repository.findByAppStatusAndIntStatus(status1, status2);
     }
 
 

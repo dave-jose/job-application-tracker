@@ -1,7 +1,10 @@
 package com.dave.jobtracker.job_application_tracker.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.type.descriptor.java.IntegerPrimitiveArrayJavaType;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,24 +30,50 @@ public class JATController {
         this.service = jatService;
     }
     
-    @GetMapping("/apps")
+    @GetMapping("/apps") // WORKS
     public List<JobApplication> getAllApplications() {
-        return service.listAllApplications();
+        return service.sortbyApplicationsDate();
     }
 
-    @PostMapping("/apps")
+    @PostMapping("/apps") // WORKS
     public JobApplication addApplication(@RequestBody JobApplication app) {
         return service.addApplication(app);
     }
 
+    @GetMapping("/apps/date/{dateApplied}") 
+    public List<JobApplication> getApplicationsByDate(@PathVariable LocalDate dateApplied) {
+        return service.filterbyApplicationsDate(dateApplied);
+    }
+
+    @GetMapping("/apps/status/{appStatus}")
+    public List<JobApplication> getApplicationsByAppStatus(@PathVariable ApplicationStatus appStatus) {
+        return service.filterbyApplicationStatus(appStatus);
+    }
+
+    @GetMapping("/apps/interview/{intStatus}")
+    public List<JobApplication> getApplicationsByIntStatus(@PathVariable InterviewStatus intStatus) {
+        return service.filterbyInterviewStatus(intStatus);
+    }
+
+    @GetMapping("/apps/{id}")
+    public JobApplication findApplication(@PathVariable Integer id) {
+        return service.findApplication(id);
+    }
+
     @DeleteMapping("/apps/{id}")
-    public void deleteApplication(@PathVariable Long id) {
+    public void deleteApplication(@PathVariable Integer id) {
         service.deleteApplication(id);
     }
 
-    @PutMapping("/apps/{id}")
-    public JobApplication updateStatus(@RequestBody ApplicationStatus status1, @RequestBody InterviewStatus status2, @PathVariable Long id) {
-        return service.updateStatus(id, status1, status2);
+    @PutMapping("/apps/ustatus/{id}")
+    public JobApplication updateStatus(@RequestBody ApplicationStatus status, @PathVariable Integer id) {
+        return service.updateStatus(id, status);
+    }
+
+    
+    @PutMapping("/apps/uinterview/{id}")
+    public JobApplication updateStatus(@RequestBody InterviewStatus status, @PathVariable Integer id) throws Exception {
+        return service.updateInterview(id, status);
     }
 
 

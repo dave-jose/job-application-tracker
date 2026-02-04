@@ -22,8 +22,8 @@ public class JobApplication {
     private String companyName;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long applicationId;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer applicationId;
     private LocalDate dateApplied;
 
     @Enumerated(EnumType.STRING)
@@ -56,7 +56,7 @@ public class JobApplication {
         this.dateUpdated = LocalDateTime.now();
     }
 
-    public Long getAppId() {
+    public Integer getAppId() {
         return this.applicationId;
     }
     
@@ -105,7 +105,12 @@ public class JobApplication {
         return this.intStatus;
     }
 
-    public void setInterviewStatus(InterviewStatus intStatus) {
+    public void setInterviewStatus(InterviewStatus intStatus) throws Exception {
+
+        if (this.getAppStatus() != ApplicationStatus.Interview && intStatus != InterviewStatus.NA) {
+            throw new Exception("new interview status doesn't make sense");
+        }
+
         this.intStatus = intStatus;
         this.dateUpdated = LocalDateTime.now();
     }
