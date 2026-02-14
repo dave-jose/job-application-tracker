@@ -37,21 +37,22 @@ public class User {
         this.dateCreated = LocalDateTime.now();
     }
 
-    public String getUserEmail() {
-        return this.email;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
-    public void setUserPass(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
+
 
 
 

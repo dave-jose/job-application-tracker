@@ -30,7 +30,7 @@ public class JATService {
     }
 
     public boolean isValidUser(User user) {
-        return userRepository.existsByEmail(user.getUserEmail());
+        return userRepository.existsByEmail(user.getEmail());
     }
 
     public JobApplication findApplication(User user, Integer id) {
