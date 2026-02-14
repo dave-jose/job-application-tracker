@@ -24,57 +24,57 @@ import com.dave.jobtracker.job_application_tracker.enums.InterviewStatus;
 @RequestMapping("/api/jat")
 public class JATController {
     
-    private final JATService service;
+    // private final JATService service;
 
-    public JATController(JATService jatService) {
-        this.service = jatService;
-    }
+    // public JATController(JATService jatService) {
+    //     this.service = jatService;
+    // }
     
-    @GetMapping("/apps") // WORKS
-    public List<JobApplication> getAllApplications() {
-        return service.sortbyApplicationsDate();
-    }
+    // @GetMapping("/apps") // WORKS
+    // public List<JobApplication> getAllApplications() {
+    //     return service.sortbyApplicationsDate();
+    // }
 
-    @PostMapping("/apps") // WORKS
-    public JobApplication addApplication(@RequestBody JobApplication app) {
-        return service.addApplication(app);
-    }
+    // @PostMapping("/apps") // WORKS
+    // public JobApplication addApplication(@RequestBody JobApplication app) {
+    //     return service.addApplication(app);
+    // }
 
-    @GetMapping("/apps/date/{dateApplied}") 
-    public List<JobApplication> getApplicationsByDate(@PathVariable LocalDate dateApplied) {
-        return service.filterbyApplicationsDate(dateApplied);
-    }
+    // @GetMapping("/apps/date/{dateApplied}") // WORKS
+    // public List<JobApplication> getApplicationsByDate(@PathVariable LocalDate dateApplied) {
+    //     return service.filterbyApplicationsDate(dateApplied);
+    // }
 
-    @GetMapping("/apps/status/{appStatus}")
-    public List<JobApplication> getApplicationsByAppStatus(@PathVariable ApplicationStatus appStatus) {
-        return service.filterbyApplicationStatus(appStatus);
-    }
+    // @GetMapping("/apps/status/{appStatus}") // WORKS
+    // public List<JobApplication> getApplicationsByAppStatus(@PathVariable ApplicationStatus appStatus) {
+    //     return service.filterbyApplicationStatus(appStatus);
+    // }
 
-    @GetMapping("/apps/interview/{intStatus}")
-    public List<JobApplication> getApplicationsByIntStatus(@PathVariable InterviewStatus intStatus) {
-        return service.filterbyInterviewStatus(intStatus);
-    }
+    // @GetMapping("/apps/interview/{intStatus}") // WORKS
+    // public List<JobApplication> getApplicationsByIntStatus(@PathVariable InterviewStatus intStatus) {
+    //     return service.filterbyInterviewStatus(intStatus);
+    // }
 
-    @GetMapping("/apps/{id}")
-    public JobApplication findApplication(@PathVariable Integer id) {
-        return service.findApplication(id);
-    }
+    // @GetMapping("/apps/{id}") // WORKS
+    // public JobApplication findApplication(@PathVariable Integer id) {
+    //     return service.findApplication(id);
+    // }
 
-    @DeleteMapping("/apps/{id}")
-    public void deleteApplication(@PathVariable Integer id) {
-        service.deleteApplication(id);
-    }
+    // @DeleteMapping("/apps/{id}") // WORKS
+    // public void deleteApplication(@PathVariable Integer id) {
+    //     service.deleteApplication(id);
+    // }
 
-    @PutMapping("/apps/ustatus/{id}")
-    public JobApplication updateStatus(@RequestBody ApplicationStatus status, @PathVariable Integer id) {
-        return service.updateStatus(id, status);
-    }
+    // @PutMapping("/apps/ustatus/{id}") // WORKS
+    // public JobApplication updateStatus(@RequestBody ApplicationStatus status, @PathVariable Integer id) {
+    //     return service.updateStatus(id, status);
+    // }
 
     
-    @PutMapping("/apps/uinterview/{id}")
-    public JobApplication updateStatus(@RequestBody InterviewStatus status, @PathVariable Integer id) throws Exception {
-        return service.updateInterview(id, status);
-    }
+    // @PutMapping("/apps/uinterview/{id}") // WORKS
+    // public JobApplication updateStatus(@RequestBody InterviewStatus status, @PathVariable Integer id) throws Exception {
+    //     return service.updateInterview(id, status);
+    // }
 
 
 

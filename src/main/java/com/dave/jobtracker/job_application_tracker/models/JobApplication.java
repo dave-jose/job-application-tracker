@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -32,7 +34,13 @@ public class JobApplication {
     @Enumerated(EnumType.STRING)
     private InterviewStatus intStatus;
 
-    private String userEmail;
+    @ManyToOne
+    @JoinColumn(
+        name = "user_email", 
+        referencedColumnName = "email"
+    )
+    private User user;
+    
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
 
@@ -43,7 +51,7 @@ public class JobApplication {
     }
 
     public JobApplication(String jobTitle, String companyName, LocalDate dateApplied, ApplicationStatus appStatus, InterviewStatus intStatus,
-        String userEmail
+        User user
     ) {
 
         this.jobTitle = jobTitle;
@@ -51,9 +59,17 @@ public class JobApplication {
         this.dateApplied = dateApplied;
         this.appStatus = appStatus;
         this.intStatus = intStatus;
-        this.userEmail = userEmail;
+        this.user = user;
         this.dateCreated = LocalDateTime.now();
         this.dateUpdated = LocalDateTime.now();
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Integer getAppId() {
@@ -113,6 +129,11 @@ public class JobApplication {
 
         this.intStatus = intStatus;
         this.dateUpdated = LocalDateTime.now();
+    }
+
+    public JobApplication orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
     }
 
 

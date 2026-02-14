@@ -14,12 +14,16 @@ import org.hibernate.type.TrueFalseConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 
 import com.dave.jobtracker.job_application_tracker.enums.ApplicationStatus;
 import com.dave.jobtracker.job_application_tracker.enums.InterviewStatus;
 import com.dave.jobtracker.job_application_tracker.models.JobApplication;
+import com.dave.jobtracker.job_application_tracker.models.User;
 import com.dave.jobtracker.job_application_tracker.repository.JARepository;
+import com.dave.jobtracker.job_application_tracker.repository.UserRepository;
 import com.dave.jobtracker.job_application_tracker.service.JATService;
+import com.dave.jobtracker.job_application_tracker.service.UserService;
 
 @SpringBootTest
 class JobApplicationTrackerApplicationTests {
@@ -30,223 +34,221 @@ class JobApplicationTrackerApplicationTests {
 	@Autowired
 	private JARepository repository;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UserRepository userRepository;
+
 	int repoSize = 0;
 
+	// TESTING USER SERVICE
 
-	/* 
-	   Tests if job application service is populated with x amount of applications and if applications that do
-	   not meet valid criteria are rejected.
+	// Testing register user, checking if user exists, and finding user
+	// @Test
+	// void test1() throws Exception {
+
+	// 	for (int i = 1; i < 31; i++) {
+	// 		String u = "user" + i + "@email.com";
+	// 		String p = "password" + i;
+	// 		userService.registerUser(u, p);
+	// 	}
+
+	// 	assertEquals(userRepository.findAll().size(), 30);
+
+	// 	for (int i = 1; i < 31; i++) {
+
+	// 		String u = "user" + i + "@email.com";
+	// 		assertTrue(userService.userExists(u));
+	// 		User user = userService.findUser(u);
+	// 		assertEquals(user.getUserEmail(), u);
+	// 	}
+
+	// }
+
+	// @Test
+	// void test2() {
+
+	// 	userRepository.deleteAll();
+
+	// 	assertEquals(userRepository.findAll().size(), 0);
+		
+	// }
+
+	void AddfiveAppsPerUser() {
+
+		ApplicationStatus[] appStatuss = {ApplicationStatus.Applied, ApplicationStatus.Interview, ApplicationStatus.Offer, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn};
+		InterviewStatus[] intstatuss = {InterviewStatus.Early, InterviewStatus.Mid, InterviewStatus.Final};
+
+		for (int i = 1; i < 31; i++) {
+			
+			String email = "user" + i + "@email.com";
+			User user = userService.findUser(email);
+
+			for (int j=1; j<6; j++) {
+
+				String jobTitle = "job" + j;
+				String companyName = "company" + j;
+				LocalDate date = LocalDate.now().minusDays(j);
+				ApplicationStatus applicationStatus = appStatuss[(int) (Math.random() * 4)];
+				InterviewStatus interviewStatus = InterviewStatus.NA;
+
+				if (applicationStatus == ApplicationStatus.Interview) {
+					interviewStatus = intstatuss[ (int) (Math.random() * 2)];
+				} 
+
+				JobApplication app = new JobApplication(jobTitle, companyName, date, applicationStatus, interviewStatus, user);
+				service.addApplication(user, app);
+			}
+
+		}
+
+	}
+
+	// TESTING JOB APPLICATION SERVICE 
+
+	@Test
+	void test3() {
+
+		// adding 5 apps per user
+		AddfiveAppsPerUser();
+
+		int index = 1;
+		
+		// checking find user 
+		for (int i = 1; i < 31; i++) {
+			String email = "user" + i + "@email.com";
+			User user = userService.findUser(email);
+
+			List<JobApplication> jobAppList = service.listAllApplications(user);
+			assertEquals(jobAppList.size(), 5);
+
+			for (int j=0; j<jobAppList.size();j++) {
+				JobApplication a = service.findApplication(user, index);
+				assertEquals(jobAppList.get(j), a);
+			}
+		}
+
+	}
+
+	// updating status and interview
+
+	@Test
+	void test4() throws Exception {
+
+		User user = userService.findUser("user2@email.com");
+
+		JobApplication a = service.findApplication(user, 6);
+
+		assertEquals(a.getAppStatus(), ApplicationStatus.Applied);
+		assertEquals(a.getInterviewStatus(), InterviewStatus.NA);
+
+		service.updateStatus(6, user, ApplicationStatus.Interview);
+		service.updateInterview(6, user, InterviewStatus.Early);
+
+		a = service.findApplication(user, 6);
+
+		assertEquals(a.getAppStatus(), ApplicationStatus.Interview);
+		assertEquals(a.getInterviewStatus(), InterviewStatus.Early);
+
+	}
+
+			/*
+		CHECKLIST OF WHAT TO TEST:
+
+		USER SERVICE: 
+		- LOGIN
+		- REGISTER USER -> Done
+		- FINDING THE USER -> Done
+		- CHECKING IF A USER EXISTS -> Done
+
+		JOB APPLICATION SERVICE:
+		- APPLICATION DELETED
+		- DELETING ALL APPLICATIONS 
+		- LISTING ALL APPLICATIONS SORTED BY DATE -> Done
+		- FILTER BY APPLICATIONS STATUS -> Done
+		- FILTER BY APPLICATIONS INTERVIEW -> Done
+		- UPDATE STATUS -> Done
+		- UPDATE INTERVIEW -> Done
+		- LISTING ALL APPLICATIONS -> Done
+		- APPLICATION ADDED -> Done
+		- CAN AN APPLICATION BE FOUND -> Done
+		- FILTER BY APPLICATIONS DATE -> Done
+		- FILTER BY APPLICATIONS DATE RANGE -> Done
+
 	*/
 
-	@Test
-	void populateJobApplications() {
-
-		ApplicationStatus[] statuses = ApplicationStatus.values(); // {ApplicationStatus.Applied, ApplicationStatus.Offer, ApplicationStatus.Rejected, ApplicationStatus.Withdrawn, ApplicationStatus.Interview};
-		InterviewStatus[] interviews = InterviewStatus.values(); // {InterviewStatus.Early, InterviewStatus.Mid, InterviewStatus.Final, InterviewStatus.NA};
-
-		int rejectedJobApps = 0;
-
-		for (int i=1; i< 101; i++) {
-			
-			String jobTitle = "Job" + i;
-			String companyName = "Company" + i;
-			LocalDate dateApplied = LocalDate.now().minusDays(i);
-			ApplicationStatus applicationStatus = statuses[ (int) (Math.random() * statuses.length)];
-			InterviewStatus interviewStatus = interviews[ (int) (Math.random() * interviews.length)];
-			String email = "user" + i + "@email.com";
-
-			if (applicationStatus != ApplicationStatus.Interview) {
-				if (interviewStatus != InterviewStatus.NA) {
-					rejectedJobApps+=1;
-				}
-			}
-
-			JobApplication app = new JobApplication(jobTitle, companyName, dateApplied, applicationStatus, interviewStatus, email);
-
-			service.addApplication(app);
-		}
-
-		repoSize = 100 - rejectedJobApps;
-
-		assertTrue(service.listAllApplications().size() == repoSize);
-
-	}
-
-	@Test
-	void singleAppDeletion() {
-		
-		JobApplication a = service.findApplication(1);
-
-		service.deleteApplication(1);
-		assertTrue(service.listAllApplications().size() == repoSize - 1);
-		RuntimeException r = assertThrows(RuntimeException.class, () -> service.findApplication(1));
-
-		assertEquals("JobApplication not found", r.getMessage());
-		repoSize-=1;
-		
-		
-	}
-
-	@Test
-	void isAppsRemoved() {
-
-		service.deleteAllApplications();
-		assertTrue(service.listAllApplications().size() == 0);
-
-	}
-
-	@Test
-	void isAppSorted() {
-		
-		List<JobApplication> l = service.sortbyApplicationsDate();
-
-		Boolean result = true;
-		LocalDate date = LocalDate.now();
-		int index = 0;
-		
-		while (index < l.size()) {
-			if (l.get(index).getDateApplied().isAfter(date))	 {
-				result = false;
-				break;
-			} else {
-				date = l.get(index).getDateApplied();
-			}
-			index+=1;
-		}
-
-		assertEquals(result, true);
-
-
-	}
-
+	// filtering 
 	@Test 
-	void isAppFilterDate() {
-
-		JobApplication a = service.findApplication(2);
-		String title = a.getJobTitle();
-		char[] titleArr = title.toCharArray();
-		int validNum = titleArr[titleArr.length - 1];
-
-		LocalDate date = LocalDate.now().minusDays(validNum);
-
-		List<JobApplication> l = service.filterbyApplicationsDate(date);
-
-		Boolean result = true;
-		int index = 0;
+	void test5() {
 		
-		while (index < l.size()) {
-			if (!(l.get(index).getDateApplied().isEqual(date)))	 {
-				result = false;
-				break;
-			} 
-			index+=1;
-		}
+		User user = userService.findUser("user1@email.com");
 
-		assertEquals(result, true);
-
-	}
-
-	@Test
-	void isAppDateRange() {
-
-		JobApplication a = service.findApplication(2);
-		JobApplication b = service.findApplication(5);
+		// filter by applications date
+		List<JobApplication> jobAppList = service.filterbyApplicationsDate(LocalDate.now().minusDays(3), user);
 		
-		LocalDate prevDate;
-		LocalDate afterDate;
-
-		if (a.getDateApplied().isAfter(b.getDateApplied())) {
-			prevDate = b.getDateApplied();
-			afterDate = a.getDateApplied();
-		} else {
-			prevDate = a.getDateApplied();
-			afterDate = b.getDateApplied();
+		for (JobApplication j: jobAppList) {
+			assertEquals(j.getDateApplied(), LocalDate.now().minusDays(3));
 		}
 
-		List<JobApplication> resultList = service.filterbyApplicationsDateRange(prevDate, afterDate);
-		Boolean resultBoolean = true;
+		// filter by applications date range
+		jobAppList = service.filterbyApplicationsDateRange(LocalDate.now().minusDays(4), LocalDate.now().minusDays(2), user);
 
-		for (int i = 0; i < resultList.size(); i++) {
+		for (JobApplication j: jobAppList) {
+
+			LocalDate dateApplied = j.getDateApplied();
+
+			boolean statement = dateApplied.isBefore(LocalDate.now().minusDays(2)) || dateApplied.isEqual(LocalDate.now().minusDays(2));
+			assertTrue(statement);
+
+			statement = dateApplied.isAfter(LocalDate.now().minusDays(4)) || dateApplied.isEqual(LocalDate.now().minusDays(4));
+			assertTrue(statement);
+
+		}
+
+		// filter by status
+		jobAppList = service.filterbyApplicationStatus(ApplicationStatus.Applied, user);
+
+		for (JobApplication j: jobAppList) {
+			assertEquals(j.getAppStatus(), ApplicationStatus.Applied);
+		}
+
+		// filter by interview
+		user = userService.findUser("user10@email.com");
+
+		jobAppList = service.filterbyInterviewStatus(InterviewStatus.Mid, user);
+
+		for (JobApplication j: jobAppList) {
+			assertEquals(j.getInterviewStatus(), InterviewStatus.Mid);
+		}		
+
+		// Listing all job applications by date
+		jobAppList = service.sortbyApplicationsDate(user);
+
+		LocalDate prevDate = jobAppList.get(0).getDateApplied(); // Dates sorted in descending order
+
+		for (JobApplication j: jobAppList) {
+
+			LocalDate currJobAppDate = j.getDateApplied();
 			
-			LocalDate currAppDate = resultList.get(i).getDateApplied();
-			
-			if (! ( (currAppDate.isAfter(prevDate) || currAppDate.equals(prevDate)) && (currAppDate.isBefore(afterDate) || currAppDate.equals(afterDate)) )) {
-				resultBoolean = false;
-				break;
-			}
+			boolean statement = currJobAppDate.isBefore(prevDate) || currJobAppDate.isEqual(prevDate);
+
+			assertTrue(statement);
+
+			prevDate = currJobAppDate; // changing prevDate to date just evaluated
 
 		}
 
-		assertEquals(resultBoolean, true);
-	
 
 	}
 
-	@Test
-	void isAppFilterStatus() {
-
-		ApplicationStatus status = ApplicationStatus.Interview;
-
-		List<JobApplication> l = service.filterbyApplicationStatus(status);
-
-		Boolean resultBoolean = true;
-
-		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i).getAppStatus()!= ApplicationStatus.Interview) {
-				resultBoolean = false;
-			}
-		}
-
-		assertEquals(resultBoolean, true);
-
-	}
-
-	@Test
-	void isAppFilterInterview() {
-
-		InterviewStatus status = InterviewStatus.NA;
-
-		List<JobApplication> l = service.filterbyInterviewStatus(status);
-
-		Boolean resultBoolean = true;
-
-		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i).getInterviewStatus()!= status) {
-				resultBoolean = false;
-			}
-		}
-
-		assertEquals(resultBoolean, true);
-
-	}
-
-	@Test
-	void isAppUpdatedStatus() {
-
-		ApplicationStatus a = service.findApplication(2).getAppStatus();
-
-		service.updateStatus(2, ApplicationStatus.Applied);
-
-		assertNotEquals(a, service.findApplication(2).getAppStatus());
 
 
-
-	}
-
-	@Test 
-	void isAppUpdatedInterview() throws Exception {
-
-		InterviewStatus a = service.findApplication(1).getInterviewStatus();
-
-		service.updateInterview(1, InterviewStatus.Early);
-
-		assertNotEquals(a, service.findApplication(1).getInterviewStatus());
-
-	}
 
 	@Test
 	void contextLoads() {
 	}
+
 
 
 

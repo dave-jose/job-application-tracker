@@ -1,11 +1,14 @@
 package com.dave.jobtracker.job_application_tracker.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.dave.jobtracker.job_application_tracker.models.User;
 import com.dave.jobtracker.job_application_tracker.repository.UserRepository;
 import com.dave.jobtracker.job_application_tracker.WebSecurityConfig;
 
+
+@Service
 public class UserService {
 
     private final UserRepository repository;
@@ -17,11 +20,11 @@ public class UserService {
     }
 
     public User findUser(String userEmail) {
-        return repository.findbyUserEmail(userEmail);
+        return repository.findByEmail(userEmail);
     }
 
     public Boolean userExists(String userEmail) {
-        return repository.existsbyUserEmail(userEmail);
+        return repository.existsByEmail(userEmail);
     }
 
 
@@ -42,7 +45,7 @@ public class UserService {
         if (!userExists(userEmail)) {
             throw new Exception("No user associated with that email");
         } else {
-            User user = findUser(userEmail); // find user associated with email
+            User user = (User) findUser(userEmail); // find user associated with email
             if (!encoder.matches(password, user.getPassword())) {
                 throw new Exception("Incorrect Password");
             }
