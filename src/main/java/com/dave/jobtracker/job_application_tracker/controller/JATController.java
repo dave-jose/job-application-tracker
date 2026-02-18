@@ -98,7 +98,7 @@ public class JATController {
         return service.filterbyApplicationsDate(dateApplied, u);
     }
 
-    @GetMapping("/apps/date/{date1}/{date2}") 
+    @GetMapping("/apps/date/{date1}/{date2}") // works
     public List<JobApplication> getApplicationsByDateRange(@PathVariable LocalDate date1, @PathVariable LocalDate date2, HttpSession session) {
         User u = getUserLoggedIn(session);
         return service.filterbyApplicationsDateRange(date1, date2, u);
