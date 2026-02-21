@@ -7,6 +7,7 @@ import org.hibernate.type.descriptor.java.IntegerPrimitiveArrayJavaType;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import com.dave.jobtracker.job_application_tracker.enums.InterviewStatus;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/jat")
 public class JATController {
