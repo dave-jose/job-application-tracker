@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../../Styles/Home.css';
 
 interface JobApplication {
@@ -14,6 +15,23 @@ export default function JobAppList() {
     const [jobApps, setJobApps] = useState<JobApplication[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("")
+    const navigate = useNavigate();
+
+    const logout = async (e: React.FormEvent) => {
+      e.preventDefault();
+      try {
+        const response = await fetch("http://localhost:8080/api/jat/logout", {
+        method: "POST",
+        credentials: "include",
+        });
+
+        navigate("/");
+
+      } catch (err: any) {
+        setError("Netowrk/Server Error" + err.message);
+      }
+
+    }
 
     useEffect(() => 
       {
@@ -37,6 +55,7 @@ export default function JobAppList() {
       if (error) return <p>{error}</p>
 
       return (
+        <div>
         <table>
           <tr>
             <th>Job Title:</th>
@@ -55,6 +74,8 @@ export default function JobAppList() {
             </tr>
           ))}
         </table>
+        <button onClick={logout}>Logout</button>
+        </div>
       );
 
 

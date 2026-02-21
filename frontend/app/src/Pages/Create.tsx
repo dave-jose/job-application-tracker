@@ -55,7 +55,7 @@ export default function Create() {
             />
             </div>
 
-            <button type="submit">Login</button>
+            <button type="submit">Create Account</button>
         </form>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
