@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Create() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+
+    const navigate = useNavigate();
 
     const createCheck = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,6 +21,7 @@ export default function Create() {
             });
 
         if (response.ok) {
+            navigate("/");
             alert("Create successful!");
         } else {
             const text = await response.text();

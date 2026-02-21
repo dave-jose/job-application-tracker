@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -6,31 +7,36 @@ export default function Login() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
 
+    const navigate = useNavigate();
+
     const loginCheck = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:8080/login", {
-                method: "POST", 
-                headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        credentials: "include",
-        body: new URLSearchParams({
-          username: email,
-          password: password,
-        }),
-      });
+            const response = await fetch("http://localhost:8080/api/jat/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json",},
+                credentials: "include",
+                body: JSON.stringify({ userEmail: email, password: password }),
+        });
 
       if (response.ok) {
+        navigate("/home");
         alert("Login successful!");
       } else {
         setError("Invalid credentials");
       }
-    } catch (err) {
-      setError("Server error");
+    } catch (err: any) {
+      setError("Network/server error: " + err.message);
     }
   };
+
+  const createAcc = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/create");
+  }
+  
+  
 
   return (
     <div>
@@ -56,6 +62,10 @@ export default function Login() {
         </div>
 
         <button type="submit">Login</button>
+      </form>
+
+      <form onSubmit={createAcc}>
+        <button type="submit">No account? Create One Here</button>
       </form>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
