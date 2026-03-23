@@ -33,6 +33,29 @@ export default function JobAppList() {
 
     }
 
+    const addApp = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch("http://localhost:8080/api/jat/apps", {
+                method: "POST",
+                headers: {"Content-Type": "application/json",},
+                credentials: "include",
+                body: JSON.stringify({  }),
+            });
+
+        if (response.ok) {
+            navigate("/home");
+            alert("Added app!");
+        } else {
+            const text = await response.text();
+            setError("Server response: " + text);
+        }
+        } catch (err: any) {
+            setError("Network/server error: " + err.message);
+        }
+    };
+
     useEffect(() => 
       {
         async function fetchList() {
