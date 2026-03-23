@@ -12,11 +12,15 @@ interface JobApplication {
 }
 
 export default function JobAppList() {
+
+    // variables
     const [jobApps, setJobApps] = useState<JobApplication[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("")
     const navigate = useNavigate();
 
+
+    // logging out
     const logout = async (e: React.FormEvent) => {
       e.preventDefault();
       try {
@@ -33,6 +37,8 @@ export default function JobAppList() {
 
     }
 
+
+    // adding an application
     const addApp = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -79,26 +85,39 @@ export default function JobAppList() {
 
       return (
         <div>
-        <table>
-          <tr>
-            <th>Job Title:</th>
-            <th>Company Name:</th>
-            <th>Date Applied:</th>
-            <th>Application Status:</th>
-            <th>Interview Status:</th>
-          </tr>
-          {jobApps.map(app => (
+          
+          <div className="sidebar">
+            <a className="active" href="/home">Home</a>
+            <a href="/addApp">Add Application</a>
+            <a href="/comingSoon">Coming Soon</a>
+          </div>
+
+          <div className="content">
+            <h1>JobNest</h1>
+          <table>
             <tr>
-              <td>{app.jobTitle}</td>
-              <td>{app.companyName}</td>
-              <td>{app.dateApplied}</td>
-              <td>{app.appStatus}</td>
-              <td>{app.interviewStatus}</td>
+              <th>Job Title:</th>
+              <th>Company Name:</th>
+              <th>Date Applied:</th>
+              <th>Application Status:</th>
+              <th>Interview Status:</th>
             </tr>
-          ))}
-        </table>
-        <button onClick={logout}>Logout</button>
+            {jobApps.map(app => (
+              <tr>
+                <td>{app.jobTitle}</td>
+                <td>{app.companyName}</td>
+                <td>{app.dateApplied}</td>
+                <td>{app.appStatus}</td>
+                <td>{app.interviewStatus}</td>
+              </tr>
+            ))}
+          </table>
+          <br/>
+          <button onClick={logout}>Logout</button>
+          </div>
+
         </div>
+
       );
 
 

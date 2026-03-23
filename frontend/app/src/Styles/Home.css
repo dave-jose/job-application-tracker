@@ -13,3 +13,59 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #6200ff;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar-tab {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #6200ff;
+  position: fixed;
+  overflow: auto;
+
+}
+
+.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+.sidebar a {
+  display: block;
+  color: rgb(255, 255, 255);
+  padding: 16px;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  background-color: #9681ff;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #9681ff;
+  color: white;
+}
+
+button {
+  background-color: #6200ff;
+  color: white;
+  border-radius: 0%;
+  height:50px;
+  width:100px;
+}
+
+button:hover {
+  background-color: #9681ff;
+  color: rgb(0, 0, 0);
+
+}

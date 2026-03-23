@@ -40,7 +40,7 @@ export default function Login() {
 
   return (
     <div>
-      <h2>Login</h2>
+      <h1>Login</h1>
 
       <form onSubmit={loginCheck}>
         <div>
@@ -60,9 +60,11 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <br></br>
 
         <button type="submit">Login</button>
       </form>
+      <br></br>
 
       <form onSubmit={createAcc}>
         <button type="submit">No account? Create One Here</button>
