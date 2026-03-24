@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../Styles/Home.css';
+import Logout from "./Components/Logout";
+import Sidebar from "./Components/Sidebar";
 
 interface JobApplication {
   appId: number;
@@ -18,24 +20,6 @@ export default function JobAppList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("")
     const navigate = useNavigate();
-
-
-    // logging out
-    const logout = async (e: React.FormEvent) => {
-      e.preventDefault();
-      try {
-        const response = await fetch("http://localhost:8080/api/jat/logout", {
-        method: "POST",
-        credentials: "include",
-        });
-
-        navigate("/");
-
-      } catch (err: any) {
-        setError("Netowrk/Server Error" + err.message);
-      }
-
-    }
 
 
     // adding an application
@@ -85,13 +69,7 @@ export default function JobAppList() {
 
       return (
         <div>
-          
-          <div className="sidebar">
-            <a className="active" href="/home">Home</a>
-            <a href="/addApp">Add Application</a>
-            <a href="/comingSoon">Coming Soon</a>
-          </div>
-
+          <Sidebar/>
           <div className="content">
             <h1>JobNest</h1>
           <table>
@@ -113,7 +91,7 @@ export default function JobAppList() {
             ))}
           </table>
           <br/>
-          <button onClick={logout}>Logout</button>
+          <Logout/>
           </div>
 
         </div>
